@@ -50,6 +50,7 @@
 					if(!empty($row->action_urls)){
 						foreach($row->action_urls as $action_unique_id => $action_url){ 
 							$action = $actions[$action_unique_id];
+							if( !empty($action_url) ) {
 					?>
 							<a href="<?php echo $action_url; ?>" class="<?php echo $action->css_class; ?> crud-action" title="<?php echo $action->label?>"><?php 
 								if(!empty($action->image_url))
@@ -57,7 +58,7 @@
 									?><img src="<?php echo $action->image_url; ?>" alt="<?php echo $action->label?>" /><?php 	
 								}
 							?></a>		
-					<?php }
+					<?php } }
 					}
 					?>					
                     <div class='clear'></div>
