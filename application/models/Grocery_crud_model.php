@@ -50,7 +50,7 @@ class Grocery_crud_model  extends CI_Model  {
     	if($this->table_name === null)
     		return false;
 
-    	$select = "`{$this->table_name}`.*";
+    	$select = "{$this->table_name}.*";
 
     	//set_relation special queries
     	if(!empty($this->relation))
@@ -72,7 +72,7 @@ class Grocery_crud_model  extends CI_Model  {
     			}
 
     			if($this->field_exists($related_field_title))
-    				$select .= ", `{$this->table_name}`.$related_field_title AS '{$this->table_name}.$related_field_title'";
+    				$select .= ", {$this->table_name}.$related_field_title AS '{$this->table_name}.$related_field_title'";
     		}
     	}
 
@@ -129,7 +129,7 @@ class Grocery_crud_model  extends CI_Model  {
     		//Sorry Codeigniter but you cannot help me with the subquery!
     		$select .= ", (SELECT GROUP_CONCAT(DISTINCT $field) FROM $selection_table "
     			."LEFT JOIN $relation_table ON $relation_table.$primary_key_alias_to_selection_table = $selection_table.$primary_key_selection_table "
-    			."WHERE $relation_table.$primary_key_alias_to_this_table = `{$this->table_name}`.$this_table_primary_key GROUP BY $relation_table.$primary_key_alias_to_this_table) AS $field_name";
+    			."WHERE $relation_table.$primary_key_alias_to_this_table = {$this->table_name}.$this_table_primary_key GROUP BY $relation_table.$primary_key_alias_to_this_table) AS $field_name";
     	}
 
     	return $select;
@@ -424,11 +424,11 @@ class Grocery_crud_model  extends CI_Model  {
     	$this->db->where($field_info->primary_key_alias_to_this_table, $main_primary_key);
     	$this->db->delete($field_info->relation_table);
     }
-
+ 
     function get_field_types_basic_table()
     {
     	$db_field_types = array();
-    	foreach($this->db->query("SHOW COLUMNS FROM `{$this->table_name}`")->result() as $db_field_type)
+    	foreach($this->db->query("SHOW COLUMNS FROM {$this->table_name}")->result() as $db_field_type)
     	{
     		$type = explode("(",$db_field_type->Type);
     		$db_type = $type[0];

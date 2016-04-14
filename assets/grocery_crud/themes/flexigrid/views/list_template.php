@@ -38,11 +38,6 @@
 
 </script>
 <div id='list-report-error' class='report-div error'></div>
-<div id='list-report-success' class='report-div success report-list' <?php if($success_message !== null){?>style="display:block"<?php }?>><?php
-if($success_message !== null){?>
-	<p><?php echo $success_message; ?></p>
-<?php }
-?></div>
 <div class="flexigrid" style='width: 100%;' data-unique-hash="<?php echo $unique_hash; ?>">
 	<div id="hidden-operations" class="hidden-operations"></div>
 	<div class="mDiv">
@@ -55,7 +50,7 @@ if($success_message !== null){?>
 	</div>
 	<div id='main-table-box' class="main-table-box">
 
-	<?php if(!$unset_add || !$unset_export || !$unset_print){?>
+	<?php if(!$unset_add || !$unset_export || !$unset_print || count($top_buttons)){?>
 	<div class="tDiv">
 		<?php if(!$unset_add){?>
 		<div class="tDiv2">
@@ -69,6 +64,18 @@ if($success_message !== null){?>
 			<div class="btnseparator">
 			</div>
 		</div>
+		<?php }?>
+		<?php foreach($top_buttons as $button){?>
+		<div class="tDiv2">
+	        	<a href='<?php echo $button->url; ?>' title='<?php echo htmlspecialchars($button->title); ?>' class='<?php echo $button->class; ?>'>
+				<div class="fbutton">
+					<div>
+						<span class="<?php echo $button->class; ?>"><?php echo htmlspecialchars($button->title); ?></span>
+					</div>
+				</div>
+			</a>
+			<div class="btnseparator"></div>
+		</div>		
 		<?php }?>
 		<div class="tDiv3">
 			<?php if(!$unset_export) { ?>

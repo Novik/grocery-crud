@@ -4,7 +4,7 @@ var fnOpenEditForm = function(this_element){
 
 	var href_url = this_element.attr("href");
 
-	var dialog_height = $(window).height() - 80;
+	var maxdialog_height = $(window).height() - 80;
 
 	//Close all
 	$(".ui-dialog-content").dialog("close");
@@ -41,7 +41,8 @@ var fnOpenEditForm = function(this_element){
 			$("<div/>").html(data.output).dialog({
 				width: 910,
 				modal: true,
-				height: dialog_height,
+				maxHeight: maxdialog_height,
+				height: 'auto',
 				close: function(){
 					$(this).remove();
 				},

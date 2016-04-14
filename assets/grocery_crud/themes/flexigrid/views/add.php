@@ -53,15 +53,12 @@
 			<div id='report-success' class='report-div success'></div>
 		</div>
 		<div class="pDiv">
-			<div class='form-button-box'>
-				<input id="form-button-save" type='submit' value='<?php echo $this->l('form_save'); ?>'  class="btn btn-large"/>
-			</div>
 <?php 	if(!$this->unset_back_to_list) { ?>
 			<div class='form-button-box'>
-				<input type='button' value='<?php echo $this->l('form_save_and_go_back'); ?>' id="save-and-go-back-button"  class="btn btn-large"/>
+				<input type='button' value='<?php echo $this->l('form_save_and_go_back'); ?>' id="save-and-go-back-button"  class="btn"/>
 			</div>
 			<div class='form-button-box'>
-				<input type='button' value='<?php echo $this->l('form_cancel'); ?>' class="btn btn-large" id="cancel-button" />
+				<input type='button' value='<?php echo $this->l('form_cancel'); ?>' class="btn" id="cancel-button" />
 			</div>
 <?php 	} ?>
 			<div class='form-button-box'>

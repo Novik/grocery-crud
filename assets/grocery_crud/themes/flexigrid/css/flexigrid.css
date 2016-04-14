@@ -176,7 +176,7 @@ table th
 }
 .flexigrid.crud-form select
 {
-	min-width: 200px;
+	min-width: 300px;
 }
 .flexigrid div.btnseparator {
 	float:left;
@@ -819,6 +819,7 @@ div.flexigrid a:hover
 	margin-left:5px;
 	padding:0px;
 	margin-right: 3px;
+	height: 16px;
 }
 .readonly_label
 {
@@ -1436,7 +1437,6 @@ input[type="submit"].btn.btn-mini {
 	font-size: 12px !important;
 }
 
-
 /** Common CSS */
 .loading-opacity
 {
@@ -1445,11 +1445,44 @@ input[type="submit"].btn.btn-mini {
     cursor: default;
 }
 
-.loading-opacity:before {
-	font-size: 26px;
-	position:absolute;
-	color: #000;
-	content: "Loading...";
-	margin-left: 550px;
-	z-index: 1000;
+.filtering_form
+{
+	position: fixed;
+	bottom: 0;
+	width: 100%;
+}
+
+.flexigrid div.mDiv
+{
+	display: none;
+}
+
+.flexigrid div.mDiv .ptogtitle
+{
+	display: none;
+}
+
+.flexigrid.crud-form div.mDiv
+{
+	display: block;
+}
+
+.flexigrid
+{
+	padding-bottom: 67px;
+}
+
+.flexigrid.crud-form
+{
+	padding-bottom: 0;
+}
+
+.flexigrid div.bDiv table
+{
+	margin-bottom: 0;
+}
+
+div.ui-dialog
+{
+	position: fixed !important;
 }

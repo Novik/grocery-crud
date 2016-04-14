@@ -1579,6 +1579,7 @@ class grocery_CRUD_Layout extends grocery_CRUD_Model_Driver
 		$data->unset_delete			= $this->unset_delete;
 		$data->unset_export			= $this->unset_export;
 		$data->unset_print			= $this->unset_print;
+		$data->top_buttons			= $this->top_buttons;
 
 		$default_per_page = $this->config->default_per_page;
 		$data->paging_options = $this->config->paging_options;
@@ -2075,6 +2076,7 @@ class grocery_CRUD_Layout extends grocery_CRUD_Model_Driver
 	protected function load_js_chosen()
 	{
 		$this->set_css($this->default_css_path.'/jquery_plugins/chosen/chosen.css');
+		$this->set_js_lib($this->default_javascript_path.'/jquery_plugins/jquery.browser.min.js');
 		$this->set_js_lib($this->default_javascript_path.'/jquery_plugins/jquery.chosen.min.js');
 	}
 
@@ -2303,7 +2305,7 @@ class grocery_CRUD_Layout extends grocery_CRUD_Model_Driver
 
 		$this->set_js_config($this->default_javascript_path.'/jquery_plugins/config/jquery-ui-timepicker-addon.config.js');
 
-		if(!empty($value) && $value != '0000-00-00 00:00:00' && $value != '1970-01-01 00:00:00'){
+		if(!empty($value) && $value != '0000-00-00 00:00:00' && $value != '1970-01-01 00:00:00' && $value != 'CURRENT_TIMESTAMP'){
 			list($year,$month,$day) = explode('-',substr($value,0,10));
 			$date = date($this->php_date_format, mktime(0,0,0,$month,$day,$year));
 			$datetime = $date.substr($value,10);
@@ -2383,7 +2385,7 @@ class grocery_CRUD_Layout extends grocery_CRUD_Model_Driver
 		$options = array('' => '') + $field_info->extras;
 		foreach($options as $option_value => $option_label)
 		{
-			$selected = !empty($value) && $value == $option_value ? "selected='selected'" : '';
+			$selected = ($value!='') && $value == $option_value ? "selected='selected'" : '';
 			$input .= "<option value='$option_value' $selected >$option_label</option>";
 		}
 
@@ -2404,7 +2406,7 @@ class grocery_CRUD_Layout extends grocery_CRUD_Model_Driver
 
 		foreach($options_array as $option)
 		{
-			$selected = !empty($value) && $value == $option ? "selected='selected'" : '';
+			$selected = ($value!='') && $value == $option ? "selected='selected'" : '';
 			$input .= "<option value='$option' $selected >$option</option>";
 		}
 
@@ -2439,7 +2441,7 @@ class grocery_CRUD_Layout extends grocery_CRUD_Model_Driver
 
 		foreach($options_array as $option)
 		{
-			$selected = !empty($value) && in_array($option,$selected_values) ? "selected='selected'" : '';
+			$selected = ($value!='') && in_array($option,$selected_values) ? "selected='selected'" : '';
 			$input .= "<option value='$option' $selected >$option</option>";
 		}
 
@@ -2461,7 +2463,7 @@ class grocery_CRUD_Layout extends grocery_CRUD_Model_Driver
 
 		foreach($options_array as $option_value => $option_label)
 		{
-			$selected = !empty($value) && in_array($option_value,$selected_values) ? "selected='selected'" : '';
+			$selected = ($value!='') && in_array($option_value,$selected_values) ? "selected='selected'" : '';
 			$input .= "<option value='$option_value' $selected >$option_label</option>";
 		}
 
@@ -2499,7 +2501,7 @@ class grocery_CRUD_Layout extends grocery_CRUD_Model_Driver
 			$options_array = $this->get_relation_array($field_info->extras);
 			foreach($options_array as $option_value => $option)
 			{
-				$selected = !empty($value) && $value == $option_value ? "selected='selected'" : '';
+				$selected = ($value!='') && $value == $option_value ? "selected='selected'" : '';
 				$input .= "<option value='$option_value' $selected >$option</option>";
 			}
 		}
@@ -2714,7 +2716,8 @@ class grocery_CRUD_Layout extends grocery_CRUD_Model_Driver
 		{
 			$field_info = $types[$field->field_name];
 
-			$field_value = !empty($field_values) && isset($field_values->{$field->field_name}) ? $field_values->{$field->field_name} : null;
+			$field_value = !empty($field_values) && isset($field_values->{$field->field_name}) ? $field_values->{$field->field_name} : 
+				( property_exists($field_info,'default') ? $field_info->default : '' );
 
 			if(!isset($this->callback_add_field[$field->field_name]))
 			{
@@ -3503,6 +3506,8 @@ class Grocery_CRUD extends grocery_CRUD_States
 	protected $unset_print			= false;
 	protected $unset_back_to_list	= false;
 	protected $unset_columns		= null;
+	protected $unset_sort_columns		= null;
+	protected $top_buttons		= array();
 	protected $unset_add_fields 	= null;
 	protected $unset_edit_fields	= null;
 	protected $unset_read_fields	= null;
@@ -3520,6 +3525,7 @@ class Grocery_CRUD extends grocery_CRUD_States
 	protected $callback_column			= array();
 	protected $callback_add_field		= array();
 	protected $callback_edit_field		= array();
+	protected $callback_read_field		= array();
 	protected $callback_upload			= null;
 	protected $callback_before_upload	= null;
 	protected $callback_after_upload	= null;
@@ -3815,6 +3821,31 @@ class Grocery_CRUD extends grocery_CRUD_States
 
 		$this->unset_columns = $args;
 
+		return $this;
+	}
+
+	public function unset_sort_columns()
+	{
+		$args = func_get_args();
+
+		if(isset($args[0]) && is_array($args[0]))
+		{
+			$args = $args[0];
+		}
+
+		$this->unset_sort_columns = $args;
+
+		return $this;
+	}	
+
+	public function add_top_button( $title, $url, $class = '' )
+	{
+		$this->top_buttons[] = (object) array
+		(
+			"title" => $title,
+			"url" => $url,
+			"class" => $class,
+		);
 		return $this;
 	}
 
@@ -4165,6 +4196,10 @@ class Grocery_CRUD extends grocery_CRUD_States
 				else
 					$this->columns[$col_num] = (object)array('field_name' => $column, 'display_as' =>
 						ucfirst(str_replace('_',' ',$column)));
+
+				$this->columns[$col_num]->sort = true;
+				if(!empty($this->unset_sort_columns) && in_array($column,$this->unset_sort_columns))
+					$this->columns[$col_num]->sort = false;						
 
 				if(!empty($this->unset_columns) && in_array($column,$this->unset_columns))
 				{
@@ -4892,6 +4927,18 @@ class Grocery_CRUD extends grocery_CRUD_States
 
 	/**
 	 *
+	 * Callback for "read" view field
+	 * @param string $field
+	 * @param mixed $callback
+	 */
+	public function callback_read_field($field, $callback = null)
+	{
+		$this->callback_read_field[$field] = $callback;
+		return $this;
+	}	
+
+	/**
+	 *
 	 * Callback that replace the default auto uploader
 	 *
 	 * @param mixed $callback
@@ -5156,7 +5203,7 @@ class Grocery_CRUD extends grocery_CRUD_States
 	 *
 	 * @param string $field_name
 	 * @param string $upload_path
-     * @return Grocery_CRUD
+         * @return Grocery_CRUD
 	 */
 	public function set_field_upload($field_name, $upload_dir = '', $allowed_file_types = '')
 	{
